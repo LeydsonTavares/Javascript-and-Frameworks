@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html ng-app="listaTelefonica">
+<head>
+	<meta charset="UTF-8">
+	<title>Lista Telefonica</title>
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+	<style>
+		.jumbotron{
+			width: 400px;
+			text-align: center;
+			margin-top: 20px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.h3{
+			margin-bottom: 30px;
+		}
+		.table{
+			margin-top: 20px;
+		}
+		.form-control{
+			margin-bottom: 5px;
+		}
+		.selecionado {
+			background-color: yellow;
+		}
+		.negrito {
+			font-weight: bold;
+		}
+		th, td{
+			text-align: center;
+		}
+	</style>
+	<script src="lib/angular/angular.js"></script>
+	<script src="lib/angular/angular-messages.js"></script>
+	<script src="lib/angular/angular-locale_pt-br.js"></script>
+	<script>
+		//definindo um módulo
+		angular.module("listaTelefonica", ["ngMessages"]);
+		//registrando um controller
+		angular.module("listaTelefonica").controller("listaTelefonicaCtrl", function($scope, $filter, $http){
+			//por questões de performance é mais recomendável o uso de filtros no controller ao invés dos pipes('|') direto na view 
+			$scope.app = "Lista Telefonica";
+			$scope.contatos = [];
+			$scope.operadoras = [];
+
+			$scope.adicionarContato = function(contato){
+				console.log(contato);
+				//$scope.contatos.push({nome: $scope.nome, telefone: $scope.telefone});
+				$scope.contatos.push(angular.copy(contato));
+				delete $scope.contato;
+				//depois de adicionar o contato ele irá settar o pristine do contato form para verdadeiro, 
+				//como se ele não tivesse sido usado, fazendo com que as mensagens de erro não apareçam depois de adicionar o contato
+				$scope.contatoForm.$setPristine();
+			};
+			$scope.apagarContatos = function (contatos) {
+				$scope.contatos = contatos.filter(function (contato) {
+					if (!contato.selecionado) return contato;
+				});
+			};
+			$scope.isContatoSelecionado = function (contatos) {
+				return contatos.some(function (contato) {
+					return contato.selecionado;
+				});
+			};
+			$scope.ordenarPor = function(campo){
+				$scope.criterioDeOrdenacao = campo;
+				//o trecho abaixo faz com que sempre que essa função for chamada, ela irá inverter a ordem de ordenação que é passada 
+				//no segundo parametro do orderBy e inicializa como undefined
+				//depois de ser executado passará de undefined para false
+				//se for executada novamente irá para true e ficará invertendo de true para false e vice-versa
+				//isso se deve ao fato do true ser o segundo parametro do orderBy que define a ordenação reversa
+				$scope.direcaoDaOrdenacao = !$scope.direcaoDaOrdenacao;
+			};
+		});
+	</script>
+</head>
+<body ng-controller="listaTelefonicaCtrl">
+	<div class="jumbotron">
+		<!--
+		<h3 ng-bind="app"></h3>
+		-->
+		<h3>{{app}}</h3>
+		<input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="O que você está buscando ?">
+		<table ng-show="contatos.length > 0" class="table">
+			<tr>
+				<th></th>
+				<th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
+				<th><a href="" ng-click="ordenarPor('nome')">Telefone</a></th>
+				<th>Operadora</th>
+				<th>Data</th>
+				<th></th>
+			</tr>
+			<!--orderBy: nome - ascendente; +nome - ascendente; -nome - descendente -->
+			<!--limitTo - limita valores/resultados; number - formata numeros, casas decimais e arredondamentos-->
+			<tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:criterioDeBusca | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
+				<td><input type="checkbox" ng-model="contato.selecionado"/></td>
+				<td>{{ contato.nome }}</td>
+				<td>{{ contato.telefone }}</td>
+				<td>{{ contato.operadora.nome | lowercase }}</td>
+				<td>{{ contato.data | date:' MMMM EEEE dd/MM/yyyy HH:mm'}}</td>
+				<!--<td>
+					<div style="width: 20px; height: 20px;" ng-style="{'background-color': contato.cor}"></div>
+				</td>-->
+			</tr>
+		</table>
+		<hr/>
+		<!--
+		É invalido: {{ contatoForm.$invalid }}
+		É valido: {{ contatoForm.$valid }}
+		-->
+		<form name="contatoForm">
+			<!--{{ contato }}-->
+			<!--no Angular JS existe uma tag name que sobreescreve a tag name do próprio html, ao utilizar ela, é criado no $scope uma propriedade
+			com o nome que você tiver dado dentro da tag name, cuidado para não sobreescrever algo já existente no $scope -->
+			<input class="form-control" type="text" ng-model="contato.nome" ng-required="true" ng-minlength="10" name="nome" placeholder="Nome">
+			<input class="form-control" type="text" ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" name="telefone" placeholder="Telefone">
+			<!--currency é utilizado para transformar determinado valor numerico aplicando uma mascara de valor monetário-->
+			<select class="form-control" ng-Model="contato.operadora" ng-options="operadora.nome + '(' + (operadora.preco | currency) + ')' group by operadora.categoria for operadora in operadoras | orderBy:'nome'">
+				<option value="">Selecione uma operadora</option>
+			</select>
+		</form>
+		<!--ng-show: exibe algo quando a condição informada for verdadeira-->
+		<!--propriedade $dirty verifica se algo foi tocado, por ex: se começou a digitar algo no form e depois apagar o que estava sendo digitado-->
+		<!--propriedade $pristine verifica se a propriedade não foi tocada ainda, o conceito abstraido, se refere a uma mata virgem-->
+		
+		<div ng-messages="contatoForm.nome.$error" class="alert alert-danger">
+			<div ng-message="required">
+				Por favor, preencha o campo nome!
+			</div>
+			<div ng-message="minlength">
+				O campo nome deve ter no minimo 10 digitos!
+			</div>
+		</div>
+
+		<div ng-show="contatoForm.telefone.$error.required && contatoForm.nome.$dirty" class="alert alert-danger">
+			Por favor, preencha o campo telefone!
+		</div>
+		<div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+			O campo telefone deve ter o formato DDDDD-DDDD
+		</div>
+
+		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
+		<button class="btn btn-danger btn-block" ng-click="apagarContatos(contatos)" ng-if="isContatoSelecionado(contatos)">Apagar Contatos</button>
+	</div>
+	<div ng-include="'footer.html'"></div>
+</body>
+</html>

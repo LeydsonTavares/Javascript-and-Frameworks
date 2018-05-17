@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+        <script src="script.js"></script>
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <!--
+    you can substitue the span of reauth email for a input with the email and
+    include the remember me checkbox
+    -->
+        <div class="container">
+            <div class="card card-container" id="formulario">
+                <!-- <img class="profile-img-card" src="//lh3.googleusercontent.com/-6V8xOA6M7BA/AAAAAAAAAAI/AAAAAAAAAAA/rzlHcD0KYwo/photo.jpg?sz=120" alt="" /> -->
+                <img id="profile-img" class="profile-img-card" src="images/icone-amarelo.png" />
+                <p id="profile-name" class="profile-name-card">Hotelnet</p>
+                <form class="form-signin" method="post" action="userAuthentication.php">
+                    <input type="username" id="inputUsername" class="form-control" placeholder="Usuário" name="login" required autofocus>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Senha" name="senha" required>
+                    <div id="remember" class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Lembre-se de mim!
+                        </label>
+                    </div>
+                    <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" id="buttonLogin">Login</button>
+                </form><!-- /form -->
+                <a href="#" class="forgot-password" id="forgot">
+                    Esqueceu a senha?
+                </a>
+            </div><!-- /card-container -->
+        </div><!-- /container -->
+
+        <footer>
+            <div id="footer" class="animated fadeInUp footerLogin">
+                <div style="float: left">
+                    <p id="developedBy">Powered by Italo Gouveia</p>
+                </div>
+                <div><img src="" align="right" style="height: 30px; margin-top: 5px; margin-right: 5px"></div>
+            </div>
+        </footer>
+    </body>
+</html>

@@ -49,7 +49,7 @@ app.use(function (req, res, next) {
 });
 
 app.listen(3300, function(){
-  console.log('Server running in the port 3000');
+  console.info('Server running in the port 3300');
 });
 
 module.exports = app;

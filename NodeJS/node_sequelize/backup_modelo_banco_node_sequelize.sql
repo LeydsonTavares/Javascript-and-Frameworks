@@ -27,7 +27,7 @@ CREATE TABLE `todos` (
   `title` varchar(40) DEFAULT NULL,
   `description` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,6 +36,7 @@ CREATE TABLE `todos` (
 
 LOCK TABLES `todos` WRITE;
 /*!40000 ALTER TABLE `todos` DISABLE KEYS */;
+INSERT INTO `todos` VALUES (2,'Angular 5','this framework is hot'),(3,'Node JS','this framework is very fast');
 /*!40000 ALTER TABLE `todos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -48,10 +49,9 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(40) DEFAULT NULL,
-  `data_nascimento` date DEFAULT NULL,
-  `email` varchar(40) DEFAULT NULL,
-  `senha` varchar(20) DEFAULT NULL,
+  `name` varchar(40) DEFAULT NULL,
+  `cpf` decimal(11,0) DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -62,7 +62,6 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Italo','1998-04-01','italo_2512@hotmail.com','vidaloka2011');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -75,4 +74,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-08 17:59:22
+-- Dump completed on 2018-05-28 15:52:34
